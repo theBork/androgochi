@@ -40,12 +40,17 @@ module.exports = {
     // console.log(`Discharging result output: `, result);
     return result;
   },
-  calculateChargingResult: ({ chargerValue, start, end }) => {
+  getChargingTime: ({ adapterValue, batteryValue, startValue }) => {
+    const chargedValue = batteryValue - startValue;
+    const amperagePerMs = adapterValue / 60 / 60 / 1000;
+    return chargedValue / amperagePerMs;
+  },
+  calculateChargingResult: ({ adapterValue, start, end }) => {
     const calculatingTime = end - start;
-    // console.log(`Charging result input: `, chargerValue, calculatingTime);
+    // console.log(`Charging result input: `, adapterValue, calculatingTime);
     if (calculatingTime <= 0) return 0;
 
-    const amperagePerMs = chargerValue / 60 / 60 / 1000;
+    const amperagePerMs = adapterValue / 60 / 60 / 1000;
     const result = _.floor(amperagePerMs * calculatingTime, 4);
     // console.log(`Charging result output: `, result);
     return result;

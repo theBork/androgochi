@@ -1,0 +1,4 @@
+- изменено charger_id на adapter_id в таблице players
+- изменено status_code на status_id
+- значения system_id, system_version_id, processor_id, adapter_id, battery_id увеличиваются на 1
+- значение status_id увеличивается на 2

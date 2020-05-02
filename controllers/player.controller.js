@@ -6,12 +6,12 @@ const START_CRYPTO_MONEY = 0;
 const START_VIRTUAL_MONEY = 0;
 
 const { createNewPlayer, getPlayerByChatId, setPlayerStatus } = require(`../models/database/player.model`);
-const { getStatusIdByType, getDefaultStatusCode, getStatusNameById, getStatusTypeById } = require(`../models/status.model`);
+const { getStatusIdByType, getDefaultStatusId, getStatusNameById, getStatusTypeById } = require(`../models/status.model`);
 const { getFirstVersionOfSystem, getSystemNameById, getSystemVersionNameById } = require(`../models/system.model`);
 const { getFirstVersionOfBattery, getBatteryValueById, getBatteryNameById } = require(`../models/battery.model`);
-const { getFirstVersionOfCharger, getChargerNameById } = require(`../models/charger.model`);
+const { getFirstVersionOfAdapter, getAdapterNameById } = require(`../models/adapter.model`);
 const { getFirstVersionOfProcessor, getProcessorNameById } = require(`../models/processor.model`);
-const { objectToCamelCase, getVoltageLevelInPercents } = require(`../utils/helper`);
+const { getVoltageLevelInPercents } = require(`../utils/helpers/common`);
 const { getInformationMessage } = require(`../models/layout`);
 
 
@@ -26,12 +26,12 @@ module.exports = {
         creationDate: +new Date(),
         systemId,
         systemVersionId: getFirstVersionOfSystem(),
-        statusCode: getDefaultStatusCode(),
+        statusId: getDefaultStatusId(),
         cryptoMoney: START_CRYPTO_MONEY,
         virtualMoney: START_VIRTUAL_MONEY,
         voltageValue: batteryValue,
         batteryId,
-        chargerId: getFirstVersionOfCharger(),
+        adapterId: getFirstVersionOfAdapter(),
         processorId: getFirstVersionOfProcessor(),
       });
       return { ok: true };
@@ -52,11 +52,11 @@ module.exports = {
     }
   },
   sendInformationMessage: async ({ ctx, player }) => {
-    const statusType = getStatusTypeById(player.statusCode);
+    const statusType = getStatusTypeById(player.statusId);
     await ctx.replyWithMarkdown(
       getInformationMessage({
         playerName: player.playerName,
-        statusName: getStatusNameById(player.statusCode),
+        statusName: getStatusNameById(player.statusId),
         systemName: getSystemNameById(player.systemId),
         versionName: getSystemVersionNameById(player.systemId, player.systemVersionId),
         voltagePercents: getVoltageLevelInPercents({
@@ -64,7 +64,7 @@ module.exports = {
           voltageValue: player.voltageValue,
         }),
         batteryName: getBatteryNameById(player.batteryId),
-        chargerName: getChargerNameById(player.chargerId),
+        adapterName: getAdapterNameById(player.adapterId),
         processorName: getProcessorNameById(player.processorId),
         cryptoMoney: player.cryptoMoney,
         virtualMoney: player.virtualMoney,
@@ -82,9 +82,9 @@ module.exports = {
   },
   setChargeStatus: async (chatId) => {
     const timestamp = +new Date();
-    const statusCode = getStatusIdByType(`charge`);
+    const statusId = getStatusIdByType(`charge`);
     try {
-      const response = await setPlayerStatus({ chatId, timestamp, statusCode });
+      const response = await setPlayerStatus({ chatId, timestamp, statusId });
       if (_.get(response, `affectedRows`) === 1) return { ok: true };
       return { ok: false };
     } catch (e) {
@@ -94,9 +94,9 @@ module.exports = {
   },
   setMiningStatus: async (chatId) => {
     const timestamp = +new Date();
-    const statusCode = getStatusIdByType(`mining`);
+    const statusId = getStatusIdByType(`mining`);
     try {
-      const response = await setPlayerStatus({ chatId, timestamp, statusCode });
+      const response = await setPlayerStatus({ chatId, timestamp, statusId });
       if (_.get(response, `affectedRows`) === 1) return { ok: true };
       return { ok: false };
     } catch (e) {

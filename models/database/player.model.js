@@ -7,12 +7,12 @@ module.exports = {
     playerName,
     systemId,
     systemVersionId,
-    statusCode,
+    statusId,
     cryptoMoney,
     virtualMoney,
     voltageValue,
     batteryId,
-    chargerId,
+    adapterId,
     processorId,
     creationDate,
   }) => {
@@ -25,12 +25,12 @@ module.exports = {
       'creation_date, ' +
       'crypto_money, ' +
       'virtual_money, ' +
-      'status_code, ' +
+      'status_id, ' +
       'status_last_update, ' +
       'voltage_value, ' +
       'voltage_last_update, ' +
       'battery_id, ' +
-      'charger_id, ' +
+      'adapter_id, ' +
       'processor_id)' +
       'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
@@ -41,12 +41,12 @@ module.exports = {
         creationDate,
         cryptoMoney,
         virtualMoney,
-        statusCode,
+        statusId,
         creationDate,
         voltageValue,
         creationDate,
         batteryId,
-        chargerId,
+        adapterId,
         processorId,
       ],
     );
@@ -60,15 +60,15 @@ module.exports = {
     const [rows] = await db.query(`SELECT * FROM players WHERE chat_id=?`, [chatId]);
     return rows;
   },
-  setPlayerStatus: async ({chatId, statusCode, timestamp}) => {
+  setPlayerStatus: async ({chatId, statusId, timestamp}) => {
     const [rows] = await db.query(
-      `UPDATE players SET status_code=?, status_last_update=? WHERE chat_id=?`, [statusCode, timestamp, chatId]
+      `UPDATE players SET status_id=?, status_last_update=? WHERE chat_id=?`, [statusId, timestamp, chatId]
     );
     return rows;
   },
   updatePlayerScores: async ({ chatId, voltageValue, cryptoMoneyValue, timestamp, statusId }) => {
     const [rows] = await db.query(
-      `UPDATE players SET status_code=?, voltage_value=?, crypto_money=?, status_last_update=? WHERE chat_id=?`,
+      `UPDATE players SET status_id=?, voltage_value=?, crypto_money=?, status_last_update=? WHERE chat_id=?`,
       [statusId, voltageValue, cryptoMoneyValue, timestamp, chatId],
     );
     return rows;

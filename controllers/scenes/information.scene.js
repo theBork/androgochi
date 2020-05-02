@@ -7,7 +7,7 @@ const _ = require(`lodash`);
 const { getPlayerByChatId, setChargeStatus, setMiningStatus, sendInformationMessage } = require(`../player.controller`);
 const { updateStatus } = require(`../status.controller`);
 const { getStatusIdByType } = require(`../../models/status.model`);
-const { parseResponse, objectToCamelCase } = require(`../../utils/helper`);
+const { parseResponse, objectToCamelCase } = require(`../../utils/helpers/common`);
 
 const information = new Scene(`information`);
 

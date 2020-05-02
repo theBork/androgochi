@@ -5,7 +5,7 @@ const emoji = require(`../utils/emoji`);
 
 const { getTopPlayersByCryptoMoney } = require(`../models/database/player.model`);
 const { cryptoMoneyRatingMessage } = require(`../models/layout`);
-const { toCamelCase } = require(`../utils/helper`);
+const { toCamelCase } = require(`../utils/helpers/common`);
 
 module.exports = {
   getRatingByCryptoMoney: async (ctx) => {

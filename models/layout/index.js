@@ -8,7 +8,7 @@ module.exports = {
     systemName,
     versionName,
     batteryName,
-    chargerName,
+    adapterName,
     processorName,
     voltagePercents,
     cryptoMoney,
@@ -18,7 +18,7 @@ module.exports = {
     `\n\n${emoji.get(`:tv:`)}Система: _${systemName} ${versionName}_` +
     `\n${emoji.get(`:hourglass:`)}Процессор: _${processorName}_` +
     `\n${emoji.get(`:battery:`)}Аккумулятор: _${batteryName}_` +
-    `\n${emoji.get(`:electric_plug:`)}Зарядное устройство: _${chargerName}_` +
+    `\n${emoji.get(`:electric_plug:`)}Зарядное устройство: _${adapterName}_` +
     `\n\n${emoji.get(`:credit_card:`)}Сумма в криптовалюте: _${cryptoMoney}_` +
     `\n${emoji.get(`:moneybag:`)}Сумма в рублях: _${virtualMoney}_`
   },
