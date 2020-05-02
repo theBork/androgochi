@@ -1,9 +1,7 @@
 const _ = require(`lodash`);
 
 const { getPlayerByChatId } = require(`./player.controller`);
-const { getProcessorAmperageById, getProcessorPerformanceById } = require(`../models/processor.model`);
-const { getSystemVersionAmperageById } = require(`../models/system.model`);
-const { getChargerValueById } = require(`../models/charger.model`);
+const { getAdapterValueById } = require(`../models/adapter.model`);
 const { getBatteryValueById } = require(`../models/battery.model`);
 const { getStatusTypeById, getStatusIdByType } = require(`../models/status.model`);
 const { updatePlayerScores } = require(`../models/database/player.model`);
@@ -15,7 +13,11 @@ const {
   calculateMiningResultWhenTurnedOff,
   calculateDischargingResult,
   calculateChargingResult,
-} = require(`../utils/helper`);
+} = require(`../utils/helpers/common`);
+
+const { getChargingTime } = require(`../utils/helpers/common`);
+const { getAmperage } = require(`../utils/helpers/amperage`);
+const { getPerformance } = require(`../utils/helpers/performance`);
 
 module.exports = {
   updateStatus: async ({ chatId, newStatusId }) => {
@@ -25,44 +27,62 @@ module.exports = {
         normalize: objectToCamelCase,
       });
       if (!player) return;
-      let _newStatusId = newStatusId || player.statusCode;
-      const statusType = getStatusTypeById(player.statusCode);
+      let _newStatusId = newStatusId || player.statusId;
+      const statusType = getStatusTypeById(player.statusId);
       const start = player.statusLastUpdate;
       const end = +new Date();
-      if (statusType === `mining`) {
-        let amperage = getProcessorAmperageById(player.processorId);
-        amperage += getSystemVersionAmperageById(player.systemId, player.systemVersionId);
-        const dischargeValue = calculateDischargingResult({ amperage, start, end });
-        let newVoltageValue = _.toFinite(player.voltageValue) - dischargeValue;
+
+      let amperage = getAmperage(player);
+      let newVoltageValue = player.voltageValue;
+      let cryptoMoneyValue = player.cryptoMoney;
+
+      if (statusType === `mining` || statusType === `idle`) {
+        let dischargeValue = calculateDischargingResult({ amperage, start, end });
+        newVoltageValue = _.toFinite(player.voltageValue) - dischargeValue;
         if (newVoltageValue < 0) {
           newVoltageValue = 0;
-          _newStatusId = getStatusIdByType(`charge`); // TODO Create inactive status
+          _newStatusId = getStatusIdByType(`off`);
         }
-        const performance = getProcessorPerformanceById(player.processorId);
+      }
+
+      if (statusType === `mining`) {
+        const performance = getPerformance(player);
         const miningValue = newVoltageValue > 0
           ? calculateMiningResult({ performance, start, end })
           : calculateMiningResultWhenTurnedOff({ performance, amperage, startVoltageValue: player.voltageValue })
-        const cryptoMoneyValue = _.toFinite(player.cryptoMoney) + miningValue;
-        await updatePlayerScores({
-          chatId, voltageValue: newVoltageValue, cryptoMoneyValue, timestamp: end, statusId: _newStatusId,
-        });
+        cryptoMoneyValue = _.toFinite(player.cryptoMoney) + miningValue;
       } else if (statusType === `charge`) {
-        const chargerValue = getChargerValueById(player.chargerId);
+        const adapterValue = getAdapterValueById(player.adapterId);
         const batteryValue = getBatteryValueById(player.batteryId);
-        const chargeValue = calculateChargingResult({ chargerValue, start, end });
-        let newVoltageValue = _.toFinite(player.voltageValue) + chargeValue;
-        if (newVoltageValue >= batteryValue) {
-          newVoltageValue = batteryValue;
-          _newStatusId = getStatusIdByType(`mining`); // TODO: Add inactive status
+        const chargeValue = calculateChargingResult({ adapterValue, start, end });
+        newVoltageValue = _.toFinite(player.voltageValue) + chargeValue;
+        if (newVoltageValue > batteryValue) {
+          const chargingTime = getChargingTime({ adapterValue, batteryValue, startValue: player.voltageValue });
+          const calculatingPeriodTime = +new Date() - player.statusLastUpdate;
+          const idleTime = calculatingPeriodTime - chargingTime;
+          console.log(`Amperage`, amperage);
+          let dischargeValue = calculateDischargingResult({ amperage, start: 0, end: idleTime });
+          console.log(batteryValue, dischargeValue);
+          newVoltageValue = batteryValue - dischargeValue;
+          console.log(
+            `Overcharging. Period: ${end - start}, chargingTime: ${chargingTime}, idleTime: ${idleTime}.`,
+            `DischargeValue: ${dischargeValue}, new voltage: ${newVoltageValue}.`,
+          );
+          if (newVoltageValue < 0) {
+            newVoltageValue = 0;
+            _newStatusId = getStatusIdByType(`off`);
+          } else {
+            _newStatusId = getStatusIdByType(`idle`);
+          }
         }
-        await updatePlayerScores({
-          chatId,
-          voltageValue: newVoltageValue,
-          cryptoMoneyValue: player.cryptoMoney,
-          timestamp: end,
-          statusId: _newStatusId,
-        });
       }
+      await updatePlayerScores({
+        chatId,
+        voltageValue: newVoltageValue,
+        cryptoMoneyValue,
+        timestamp: end,
+        statusId: _newStatusId,
+      });
     } catch (e) {
       console.log(e);
       throw new Error(`Ошибка обновления статуса`);
