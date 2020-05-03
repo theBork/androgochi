@@ -1,14 +1,12 @@
 const _ = require(`lodash`);
 
-const { getPlayerByChatId } = require(`./player.controller`);
+const { getPlayerByChatId } = require(`../models/player.model`);
 const { getAdapterValueById } = require(`../models/adapter.model`);
 const { getBatteryValueById } = require(`../models/battery.model`);
 const { getStatusTypeById, getStatusIdByType } = require(`../models/status.model`);
-const { updatePlayerScores } = require(`../models/database/player.model`);
+const { updatePlayerScores } = require(`../models/database/player.db`);
 
 const {
-  parseResponse,
-  objectToCamelCase,
   calculateMiningResult,
   calculateMiningResultWhenTurnedOff,
   calculateDischargingResult,
@@ -22,10 +20,7 @@ const { getPerformance } = require(`../utils/helpers/performance`);
 module.exports = {
   updateStatus: async ({ chatId, newStatusId }) => {
     try {
-      const player = parseResponse({
-        response: await getPlayerByChatId(chatId),
-        normalize: objectToCamelCase,
-      });
+      const player = await getPlayerByChatId(chatId);
       if (!player) return;
       let _newStatusId = newStatusId || player.statusId;
       const statusType = getStatusTypeById(player.statusId);
@@ -33,9 +28,8 @@ module.exports = {
       const end = +new Date();
 
       let amperage = getAmperage(player);
-      let newVoltageValue = player.voltageValue;
-      let cryptoMoneyValue = player.cryptoMoney;
-
+      let newVoltageValue = _.toFinite(player.voltageValue);
+      let cryptoMoneyValue = _.toFinite(player.cryptoMoney);
       if (statusType === `mining` || statusType === `idle`) {
         let dischargeValue = calculateDischargingResult({ amperage, start, end });
         newVoltageValue = _.toFinite(player.voltageValue) - dischargeValue;
@@ -50,7 +44,7 @@ module.exports = {
         const miningValue = newVoltageValue > 0
           ? calculateMiningResult({ performance, start, end })
           : calculateMiningResultWhenTurnedOff({ performance, amperage, startVoltageValue: player.voltageValue })
-        cryptoMoneyValue = _.toFinite(player.cryptoMoney) + miningValue;
+        cryptoMoneyValue += miningValue;
       } else if (statusType === `charge`) {
         const adapterValue = getAdapterValueById(player.adapterId);
         const batteryValue = getBatteryValueById(player.batteryId);
@@ -60,9 +54,7 @@ module.exports = {
           const chargingTime = getChargingTime({ adapterValue, batteryValue, startValue: player.voltageValue });
           const calculatingPeriodTime = +new Date() - player.statusLastUpdate;
           const idleTime = calculatingPeriodTime - chargingTime;
-          console.log(`Amperage`, amperage);
           let dischargeValue = calculateDischargingResult({ amperage, start: 0, end: idleTime });
-          console.log(batteryValue, dischargeValue);
           newVoltageValue = batteryValue - dischargeValue;
           console.log(
             `Overcharging. Period: ${end - start}, chargingTime: ${chargingTime}, idleTime: ${idleTime}.`,

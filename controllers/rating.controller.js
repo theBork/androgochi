@@ -1,21 +1,18 @@
-const _ = require(`lodash`);
-const Markup = require('telegraf/markup');
+const messages = require(`../models/layout/messages/rating`);
+const keyboards = require(`../models/layout/keyboards/rating`);
 
-const emoji = require(`../utils/emoji`);
-
-const { getTopPlayersByCryptoMoney } = require(`../models/database/player.model`);
-const { cryptoMoneyRatingMessage } = require(`../models/layout`);
+const { getTopPlayersByCryptoMoney } = require(`../models/database/player.db`);
 const { toCamelCase } = require(`../utils/helpers/common`);
 
 module.exports = {
-  getRatingByCryptoMoney: async (ctx) => {
+  enter: async (ctx) => {
     try {
       const topPlayersResponse = await getTopPlayersByCryptoMoney(5);
       const topPlayers = toCamelCase(topPlayersResponse);
       if (!topPlayers) throw new Error(`Ошибка получения райтинга по криптовалюте`);
       await ctx.replyWithMarkdown(
-        cryptoMoneyRatingMessage(topPlayers),
-        Markup.keyboard([`${emoji.back} Назад`]).oneTime().resize().extra(),
+        messages.ratingMainMessage(topPlayers),
+        keyboards.back(),
       );
     } catch (e) {
       console.log(e);
@@ -23,4 +20,5 @@ module.exports = {
       ctx.scene.enter(`information`);
     }
   },
+  reEnter: (ctx) => ctx.scene.reenter(),
 }

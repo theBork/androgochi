@@ -3,10 +3,10 @@ const _ = require('lodash');
 const Markup = require('telegraf/markup');
 const WizardScene = require('telegraf/scenes/wizard');
 
-const { createNewPlayer } = require(`../player.controller`);
-const { getSystemNames, getSystemId } = require(`../../models/system.model`);
-const { welcomeMessage, nameSelectionMessage } = require(`../../models/layout`);
-
+const { createNewPlayer } = require(`../models/player.model`);
+const { getSystemNames, getSystemId } = require(`../models/system.model`);
+const { welcomeMessage, nameSelectionMessage } = require(`../models/layout/messages/register`);
+// TODO: Create register controller-scene implementation
 const beforeNameSelectionStep = async (ctx) => {
   const message = `${welcomeMessage()}\n\n${nameSelectionMessage()}`;
   await ctx.replyWithMarkdown(message);
@@ -54,4 +54,4 @@ const registerScene = new WizardScene(
   typeSelectionStep
 );
 
-module.exports = [registerScene];
+module.exports = registerScene;

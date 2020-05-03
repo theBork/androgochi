@@ -2,3 +2,5 @@
 - изменено status_code на status_id
 - значения system_id, system_version_id, processor_id, adapter_id, battery_id увеличиваются на 1
 - значение status_id увеличивается на 2
+- изменен тип crypto_money на DECIMAL(16,2)
+- изменен тип virtual_money на DECIMAL(16,2)

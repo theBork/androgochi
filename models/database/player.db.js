@@ -79,4 +79,11 @@ module.exports = {
     );
     return rows;
   },
+  increaseMoneyValues: async ({ chatId, cryptoMoneyIncreaseValue, virtualMoneyIncreaseValue }) => {
+    const [rows] = await db.query(
+      `UPDATE players SET crypto_money=crypto_money+?, virtual_money=virtual_money+? WHERE chat_id=?`,
+      [cryptoMoneyIncreaseValue, virtualMoneyIncreaseValue, chatId],
+    );
+    return rows;
+  },
 };

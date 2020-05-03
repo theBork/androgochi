@@ -21,7 +21,7 @@ module.exports = {
   },
   toCamelCase: (data) => {
     if (_.isArray(data)) return _.map(data, (item) => _objectToCamelCase(item));
-    return this.objectToCamelCase(data);
+    return _objectToCamelCase(data);
   },
   getVoltageLevelInPercents: ({ batteryValue, voltageValue }) => {
     return `${_.ceil(voltageValue / (batteryValue / 100))}%`;
@@ -31,6 +31,7 @@ module.exports = {
     const data = _.get(response, `data`);
     return _.isFunction(normalize) ? normalize(data) : data;
   },
+  parseDatabaseUpdateResponse: ({ response }) => _.get(response, `effectedRows`) === 1,
   calculateDischargingResult: ({ amperage, start, end }) => {
     const calculatingTime = end - start;
     // console.log(`Discharging result input: `, amperage, calculatingTime);

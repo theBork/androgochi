@@ -2,6 +2,7 @@ require(`dotenv`).config();
 const express = require(`express`);
 const app = express();
 
+const _ = require(`lodash`);
 const Telegraf = require(`telegraf`);
 const bot = new Telegraf(process.env.TOKEN);
 
@@ -21,18 +22,15 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
 })
 
-const _ = require(`lodash`);
-
-const information = require('./controllers/scenes/information.scene');
-const rating = require('./controllers/scenes/rating.scene');
-const registerScenes = require('./controllers/scenes/register.scene');
-
-const { getPlayerByChatId } = require(`./controllers/player.controller`);
+const information = require('./scenes/information.scene');
+const rating = require('./scenes/rating.scene');
+const exchange = require('./scenes/exchange.scene');
+const registerScenes = require('./scenes/register.scene');
 
 const session = require('telegraf/session')
 const Stage = require('telegraf/stage')
 
-const stage = new Stage([].concat(information, registerScenes, rating));
+const stage = new Stage([information, registerScenes, rating, exchange]);
 
 bot.use(session());
 bot.use(stage.middleware());
