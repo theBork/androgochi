@@ -2,7 +2,6 @@ require(`dotenv`).config();
 const express = require(`express`);
 const app = express();
 
-const _ = require(`lodash`);
 const Telegraf = require(`telegraf`);
 const bot = new Telegraf(process.env.TOKEN);
 
