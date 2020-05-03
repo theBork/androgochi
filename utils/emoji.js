@@ -21,3 +21,7 @@ module.exports.hand = emoji.get(`:raised_hand:`);
 module.exports.chart = emoji.get(`:bar_chart:`);
 module.exports.sun = emoji.get(`:sunny:`);
 module.exports.x = emoji.get(`:x:`);
+module.exports.motherboard = emoji.get(`:control_knobs:`);
+module.exports.ram = emoji.get(`:musical_keyboard:`);
+module.exports.disc = emoji.get(`:floppy_disk:`);
+module.exports.videoCard = emoji.get(`:video_camera:`);

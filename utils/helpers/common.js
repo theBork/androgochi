@@ -31,6 +31,11 @@ module.exports = {
     const data = _.get(response, `data`);
     return _.isFunction(normalize) ? normalize(data) : data;
   },
+  parseError: (ctx, { error, defaultMessage = `Произошла ошибка` }) => {
+    console.log(error);
+    ctx.reply(defaultMessage);
+    ctx.scene.enter(`information`);
+  },
   parseDatabaseUpdateResponse: ({ response }) => _.get(response, `effectedRows`) === 1,
   calculateDischargingResult: ({ amperage, start, end }) => {
     const calculatingTime = end - start;
@@ -72,5 +77,5 @@ module.exports = {
     const result = _.floor(miningTime / 1000 * performance, 2);
     // console.log(`Mining result output: `, result);
     return result;
-  }
+  },
 }

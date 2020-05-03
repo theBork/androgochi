@@ -9,7 +9,7 @@ const { getFirstVersionOfSystem } = require(`./system.model`);
 const { getFirstVersionOfBattery, getBatteryValueById } = require(`./battery.model`);
 const { getFirstVersionOfAdapter } = require(`./adapter.model`);
 const { getFirstVersionOfProcessor } = require(`./processor.model`);
-const { toCamelCase, parseDatabaseUpdateResponse } = require(`../utils/helpers/common`);
+const { toCamelCase } = require(`../utils/helpers/common`);
 
 
 module.exports = {

@@ -22,6 +22,7 @@ app.listen(port, () => {
 })
 
 const information = require('./scenes/information.scene');
+const shop = require('./scenes/shop.scene');
 const rating = require('./scenes/rating.scene');
 const exchange = require('./scenes/exchange.scene');
 const registerScenes = require('./scenes/register.scene');
@@ -29,7 +30,7 @@ const registerScenes = require('./scenes/register.scene');
 const session = require('telegraf/session')
 const Stage = require('telegraf/stage')
 
-const stage = new Stage([information, registerScenes, rating, exchange]);
+const stage = new Stage([information, shop, registerScenes, rating, exchange]);
 
 bot.use(session());
 bot.use(stage.middleware());

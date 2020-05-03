@@ -3,8 +3,8 @@ const _ = require(`lodash`);
 const messages = require(`../models/layout/messages/information`);
 const keyboards = require(`../models/layout/keyboards/information`);
 
-const { updateStatus } = require("./status.controller");
-const { getPlayerByChatId } = require("../models/player.model");
+const { updateStatus } = require(`./status.controller`);
+const { getPlayerByChatId } = require(`../models/player.model`);
 const { getStatusIdByType, getStatusNameById, getStatusTypeById } = require(`../models/status.model`);
 const { getSystemNameById, getSystemVersionNameById } = require(`../models/system.model`);
 const { getBatteryValueById, getBatteryNameById } = require(`../models/battery.model`);
