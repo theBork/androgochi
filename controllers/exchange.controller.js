@@ -113,12 +113,8 @@ module.exports = {
         if (player.cryptoMoney < moneyToExchange) {
           return ctx.replyWithMarkdown(exchangeBigNumberMessage(), exchangeDeclineKeyboard());
         }
-        console.log(`To exchange C-V`, moneyToExchange);
-        console.log(`Rate`, cryptoToVirtualRate);
         const cryptoMoneyIncreaseValue = -moneyToExchange;
         const virtualMoneyIncreaseValue = _.round(moneyToExchange * cryptoToVirtualRate, MONEY_ROUND_VALUE);
-        console.log(`Crypto`, cryptoMoneyIncreaseValue);
-        console.log(`Virtual`, virtualMoneyIncreaseValue);
         const isSuccessIncrease = await updateMoneyValues({
           chatId,
           cryptoMoneyIncreaseValue,
@@ -135,12 +131,8 @@ module.exports = {
         if (player.virtualMoney < moneyToExchange) {
           return ctx.replyWithMarkdown(exchangeBigNumberMessage(), exchangeDeclineKeyboard());
         }
-        console.log(`To exchange V-C`, moneyToExchange);
-        console.log(`Rate`, virtualToCryptoRate);
         const cryptoMoneyIncreaseValue = _.round(moneyToExchange * virtualToCryptoRate, MONEY_ROUND_VALUE);
         const virtualMoneyIncreaseValue = -moneyToExchange;
-        console.log(`Crypto`, cryptoMoneyIncreaseValue);
-        console.log(`Virtual`, virtualMoneyIncreaseValue);
         const isSuccessIncrease = await updateMoneyValues({
           chatId,
           cryptoMoneyIncreaseValue,
