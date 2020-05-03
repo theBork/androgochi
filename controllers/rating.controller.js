@@ -21,4 +21,5 @@ module.exports = {
     }
   },
   reEnter: (ctx) => ctx.scene.reenter(),
+  enterScene: (sceneName) => (ctx) => ctx.scene.enter(sceneName),
 }
