@@ -44,27 +44,27 @@ module.exports = {
       `disk_id, ` +
       `videocard_id) ` +
       `VALUES (` +
-      `${chatId}, ` +
-      `${playerName}, ` +
-      `${systemId}, ` +
-      `${systemVersionId}, ` +
-      `${creationDate}, ` +
-      `${cryptoMoney}, ` +
-      `${cryptoMoney}, ` +
-      `${virtualMoney}, ` +
-      `${statusId}, ` +
-      `${creationDate}, ` +
-      `${creationDate}, ` +
-      `${voltageValue}, ` +
-      `${creationDate}, ` +
-      `${batteryId}, ` +
-      `${adapterId}, ` +
-      `0, ` +
-      `${motherboardId}, ` +
-      `${processorId}, ` +
-      `${ramId}, ` +
-      `${diskId}, ` +
-      `${videoCardId})`,
+      `'${chatId}', ` +
+      `'${playerName}', ` +
+      `'${systemId}', ` +
+      `'${systemVersionId}', ` +
+      `'${creationDate}', ` +
+      `'${cryptoMoney}', ` +
+      `'${cryptoMoney}', ` +
+      `'${virtualMoney}', ` +
+      `'${statusId}', ` +
+      `'${creationDate}', ` +
+      `'${creationDate}', ` +
+      `'${voltageValue}', ` +
+      `'${creationDate}', ` +
+      `'${batteryId}', ` +
+      `'${adapterId}', ` +
+      `'0', ` +
+      `'${motherboardId}', ` +
+      `'${processorId}', ` +
+      `'${ramId}', ` +
+      `'${diskId}', ` +
+      `'${videoCardId}')`,
     );
     return row;
   },
