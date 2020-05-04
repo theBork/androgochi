@@ -2,15 +2,12 @@ const messages = require(`../../models/layout/messages/shop`);
 const keyboards = require(`../../models/layout/keyboards/shop`);
 
 const { updateStatus } = require(`../status.controller`);
-const { getStatusIdByType } = require(`../../models/status.model`);
 const { getPlayerByChatId } = require(`../../models/player.model`);
 const { parseError } = require(`../../utils/helpers/common`);
-const { getProcessors } = require(`../../models/processor.model`);
 
 const checkAuthAndReturnPlayer = async (ctx) => {
   try {
-    const newStatusId = getStatusIdByType(`idle`);
-    await updateStatus({ chatId: ctx.chat.id, newStatusId });
+    await updateStatus({ chatId: ctx.chat.id });
     const player = await getPlayerByChatId(ctx.chat.id);
     if (!player) {
       ctx.scene.enter('register');
