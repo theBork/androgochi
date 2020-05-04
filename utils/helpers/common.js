@@ -35,7 +35,7 @@ module.exports = {
     ctx.reply(defaultMessage);
     ctx.scene.enter(`information`);
   },
-  parseDatabaseUpdateResponse: ({ response }) => _.get(response, `effectedRows`) === 1,
+  parseDatabaseUpdateResponse: ({ response }) => _.get(response, `affectedRows`) === 1,
   calculateDischargingResult: ({ amperage, start, end }) => {
     const calculatingTime = end - start;
     // console.log(`Discharging result input: `, amperage, calculatingTime);

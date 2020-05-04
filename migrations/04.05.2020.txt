@@ -1,3 +1,12 @@
 - добавлены поля motherboard_id, ram_id, disk_id, videocard_id типа SMALLINT (начальное значение: 1)
 - добавено поле crypto_accumulator типа DECIMAL(20,2)
 - добавлено поле adapter_uses типа SMALLINT (начальное значение: 0)
+- добавлено поле status_time_trigger типа VARCHAR (255)
+- добавлена таблица notifications
+    столбцы:
+    1. id (INT UNSIGNED PRIMARY A/I)
+    2. group_to (VARCHAR 255)
+    3. is_sent (TINYINT UNSIGNED)
+    4. send_time_from (VARCHAR 255)
+    5. message (TEXT)
+    5. creation_date (VARCHAR 255)

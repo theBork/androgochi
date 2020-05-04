@@ -2,15 +2,21 @@ require(`dotenv`).config();
 const express = require(`express`);
 const app = express();
 
+const { startNotificationScheduler } = require(`./utils/cron`);
+
 const Telegraf = require(`telegraf`);
 const bot = new Telegraf(process.env.TOKEN);
 
 const botPath = `/secret-path`;
 app.use(bot.webhookCallback(botPath))
 bot.telegram.setWebhook(process.env.WEBHOOK_DOMAIN + botPath).then((result) => {
-  if (result) return console.log(`Webhook on URL ${process.env.WEBHOOK_DOMAIN + botPath} successfully added.`)
+  if (result) {
+    return console.log(`Webhook on URL ${process.env.WEBHOOK_DOMAIN + botPath} successfully added.`)
+  }
   console.log(`Error while setting webhook.`);
 });
+
+startNotificationScheduler(bot);
 
 app.get('/', (req, res) => {
   res.send('Hello World!')

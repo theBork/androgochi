@@ -48,10 +48,10 @@ module.exports = {
         batteryId,
         adapterId: getFirstVersionOfAdapter(),
       });
-      return { ok: true };
+      return true;
     } catch (e) {
       console.log(e);
-      return { ok: false };
+      return false;
     }
   },
   getPlayerByChatId: async (chatId) => {

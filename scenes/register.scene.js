@@ -33,17 +33,20 @@ const typeSelectionStep = async (ctx) => {
   const playerName = _.get(ctx, `scene.state.playerName`);
   const systemId = getSystemId(system);
   try {
-    await createNewPlayer({ chatId, playerName, systemId });
+    const result = await createNewPlayer({ chatId, playerName, systemId });
+    if (!result) {
+      throw new Error();
+    }
+    await ctx.replyWithMarkdown(`Устанавливаем ОС *${system}*. Подождите...`);
+    await setTimeout(() => {
+      ctx.reply(`Система установлена. Ваш андроид готов к работе.`)
+      return ctx.scene.enter(`information`);
+    }, 3000);
   } catch (e) {
     console.log(e);
     ctx.reply(`Ошибка при создании персонажа.`);
     return ctx.scene.reenter();
   }
-  await ctx.replyWithMarkdown(`Устанавливаем ОС *${system}*. Подождите...`);
-  await setTimeout(() => {
-    ctx.reply(`Система установлена. Ваш андроид готов к работе.`)
-    return ctx.scene.enter(`information`);
-  }, 3000);
 }
 
 
