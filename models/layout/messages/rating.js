@@ -1,4 +1,4 @@
-const emoji = require(`../../utils/emoji`);
+const emoji = require(`../../../utils/emoji`);
 const _ = require(`lodash`);
 
 module.exports = {
