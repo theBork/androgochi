@@ -4,6 +4,10 @@ const emoji = require(`../../utils/emoji`);
 module.exports.back = `${emoji.back} Назад`;
 module.exports.exit = `${emoji.back} Выход`;
 
+//Rating scene
+module.exports.mining = `${emoji.bank} По майнингу`;
+module.exports.performance = `${emoji.performance} По производительности`;
+
 //Information scene
 module.exports.idle = `${emoji.sun} Отдыхать`;
 module.exports.refresh = `${emoji.refresh} Обновить`;

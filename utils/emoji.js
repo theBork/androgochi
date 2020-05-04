@@ -26,3 +26,4 @@ module.exports.ram = emoji.get(`:musical_keyboard:`);
 module.exports.disk = emoji.get(`:floppy_disk:`);
 module.exports.videoCard = emoji.get(`:video_camera:`);
 module.exports.info = emoji.get(`:books:`);
+module.exports.performance = emoji.get(`:muscle:`);
