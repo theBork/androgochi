@@ -60,12 +60,15 @@ module.exports = {
           ? calculateMiningResult({ performance, start, end })
           : calculateMiningResultWhenTurnedOff({ performance, amperage, startVoltageValue: player.voltageValue })
         const diskSpace = getDiskValueById(player.diskId);
-        if (diskSpace < cryptoMoneyValue) {
+        if (diskSpace <= cryptoMoneyValue) {
+          _newStatusId = getStatusIdByType(`idle`);
           cryptoMoneyValue = diskSpace;
           miningValue = 0;
         } else if (diskSpace < (cryptoMoneyValue + miningValue)) {
+          _newStatusId = getStatusIdByType(`idle`);
           miningValue = diskSpace - cryptoMoneyValue;
           cryptoMoneyValue += miningValue;
+
         } else {
           cryptoMoneyValue += miningValue;
         }
