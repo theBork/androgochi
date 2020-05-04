@@ -56,6 +56,7 @@ module.exports = {
     try {
       const isSuccessBuy = buyDetail({
         chatId: ctx.chat.id,
+        player,
         detailType: `battery`,
         detailId: idToBuy,
         spentVirtualMoney: battery.price,

@@ -7,6 +7,7 @@ const { updateStatus } = require(`../status.controller`);
 const { getPlayerByChatId, buyDetail } = require(`../../models/player.model`);
 const { parseError } = require(`../../utils/helpers/common`);
 const { getRam, getRamObjectById } = require(`../../models/ram.model`);
+const { getMotherboardRamTypesById, getMotherboardRamMaxSizeById } = require(`../../models/motherboard.model`);
 
 const checkAuthAndReturnPlayer = async (ctx) => {
   try {
@@ -53,9 +54,20 @@ module.exports = {
       return ctx.replyWithMarkdown(messages.shopLowFundsMessage(), keyboards.shopBackKeyboard());
     }
 
+    const motherboardRamTypes = getMotherboardRamTypesById(player.motherboardId);
+    const motherboardRamMaxSize = getMotherboardRamMaxSizeById(player.motherboardId);
+
+    if (_.indexOf(motherboardRamTypes, ram.type) === -1) {
+      return ctx.replyWithMarkdown(messages.shopWrongRamTypeMessage(), keyboards.shopBackKeyboard());
+    }
+    if (motherboardRamMaxSize < ram.value) {
+      return ctx.replyWithMarkdown(messages.shopWrongRamSizeMessage(), keyboards.shopBackKeyboard());
+    }
+
     try {
       const isSuccessBuy = buyDetail({
         chatId: ctx.chat.id,
+        player,
         detailType: `ram`,
         detailId: idToBuy,
         spentVirtualMoney: ram.price,

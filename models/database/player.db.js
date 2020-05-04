@@ -68,7 +68,7 @@ module.exports = {
     return row;
   },
   getTopPlayersByCryptoMoney: async (limit) => {
-    const [rows] = await db.query(`SELECT * FROM players ORDER BY crypto_money DESC LIMIT ?`, [limit]);
+    const [rows] = await db.query(`SELECT * FROM players ORDER BY crypto_accumulator DESC LIMIT ?`, [limit]);
     return rows;
   },
   getPlayerByChatId: async (chatId) => {
@@ -81,10 +81,22 @@ module.exports = {
     );
     return rows;
   },
-  updatePlayerScores: async ({ chatId, voltageValue, cryptoMoneyValue, timestamp, statusId }) => {
+  updatePlayerScores: async ({
+    chatId,
+    voltageValue,
+    cryptoMoneyValue,
+    miningValue,
+    newAdapterId,
+    newAdapterUsesValue,
+    timestamp,
+    statusId
+  }) => {
     const [rows] = await db.query(
-      `UPDATE players SET status_id=?, voltage_value=?, crypto_money=?, status_last_update=? WHERE chat_id=?`,
-      [statusId, voltageValue, cryptoMoneyValue, timestamp, chatId],
+      `UPDATE players ` +
+      `SET status_id=?, voltage_value=?, crypto_money=?, crypto_accumulator=crypto_accumulator+?, ` +
+      `adapter_id=?, adapter_uses=?, status_last_update=? ` +
+      `WHERE chat_id=?`,
+      [statusId, voltageValue, cryptoMoneyValue, miningValue, newAdapterId, newAdapterUsesValue, timestamp, chatId],
     );
     return rows;
   },
@@ -105,6 +117,27 @@ module.exports = {
     const [rows] = await db.query(
       `UPDATE players SET ${detailType}_id=?, virtual_money=virtual_money-? WHERE chat_id=?`,
       [detailId, spentVirtualMoney, chatId],
+    );
+    return rows;
+  },
+  buyMotherboard: async ({ chatId, detailId, newRamId, spentVirtualMoney }) => {
+    const [rows] = await db.query(
+      `UPDATE players SET motherboard_id=?, ram_id=?, virtual_money=virtual_money-? WHERE chat_id=?`,
+      [detailId, newRamId, spentVirtualMoney, chatId],
+    );
+    return rows;
+  },
+  buyDisk: async ({ chatId, detailId, newCryptoMoneyValue, spentVirtualMoney }) => {
+    const [rows] = await db.query(
+      `UPDATE players SET disk_id=?, crypto_money=?, virtual_money=virtual_money-? WHERE chat_id=?`,
+      [detailId, newCryptoMoneyValue, spentVirtualMoney, chatId],
+    );
+    return rows;
+  },
+  buyBattery: async ({ chatId, detailId, voltageValue, spentVirtualMoney }) => {
+    const [rows] = await db.query(
+      `UPDATE players SET battery_id=?, voltage_value=?, virtual_money=virtual_money-? WHERE chat_id=?`,
+      [detailId, voltageValue, spentVirtualMoney, chatId],
     );
     return rows;
   },

@@ -7,6 +7,7 @@ const { updateStatus } = require(`../status.controller`);
 const { getPlayerByChatId, buyDetail } = require(`../../models/player.model`);
 const { parseError } = require(`../../utils/helpers/common`);
 const { getVideoCards, getVideoCardObjectById } = require(`../../models/videoCard.model`);
+const { getMotherboardVideoCardTypesById } = require(`../../models/motherboard.model`);
 
 const checkAuthAndReturnPlayer = async (ctx) => {
   try {
@@ -53,9 +54,16 @@ module.exports = {
       return ctx.replyWithMarkdown(messages.shopLowFundsMessage(), keyboards.shopBackKeyboard());
     }
 
+    const motherboardVideoCardTypes = getMotherboardVideoCardTypesById(player.motherboardId);
+
+    if (_.indexOf(motherboardVideoCardTypes, videoCard.type) === -1) {
+      return ctx.replyWithMarkdown(messages.shopWrongVideoCardTypeMessage(), keyboards.shopBackKeyboard());
+    }
+
     try {
       const isSuccessBuy = buyDetail({
         chatId: ctx.chat.id,
+        player,
         detailType: `videocard`,
         detailId: idToBuy,
         spentVirtualMoney: videoCard.price,

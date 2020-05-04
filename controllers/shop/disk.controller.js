@@ -7,6 +7,7 @@ const { updateStatus } = require(`../status.controller`);
 const { getPlayerByChatId, buyDetail } = require(`../../models/player.model`);
 const { parseError } = require(`../../utils/helpers/common`);
 const { getDisks, getDiskObjectById } = require(`../../models/disk.model`);
+const { getMotherboardDiskTypesById } = require(`../../models/motherboard.model`);
 
 const checkAuthAndReturnPlayer = async (ctx) => {
   try {
@@ -53,9 +54,16 @@ module.exports = {
       return ctx.replyWithMarkdown(messages.shopLowFundsMessage(), keyboards.shopBackKeyboard());
     }
 
+    const motherboardDiskTypes = getMotherboardDiskTypesById(player.motherboardId);
+
+    if (_.indexOf(motherboardDiskTypes, disk.type) === -1) {
+      return ctx.replyWithMarkdown(messages.shopWrongDiskTypeMessage(), keyboards.shopBackKeyboard());
+    }
+
     try {
       const isSuccessBuy = buyDetail({
         chatId: ctx.chat.id,
+        player,
         detailType: `disk`,
         detailId: idToBuy,
         spentVirtualMoney: disk.price,

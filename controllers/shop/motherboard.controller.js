@@ -7,6 +7,10 @@ const { updateStatus } = require(`../status.controller`);
 const { getPlayerByChatId, buyDetail } = require(`../../models/player.model`);
 const { parseError } = require(`../../utils/helpers/common`);
 const { getMotherboards, getMotherboardObjectById } = require(`../../models/motherboard.model`);
+const { getProcessorSocketById } = require(`../../models/processor.model`);
+const { getRamValueById, getRamTypeById } = require(`../../models/ram.model`);
+const { getDiskTypeById } = require(`../../models/disk.model`);
+const { getVideoCardTypeById } = require(`../../models/videoCard.model`);
 
 const checkAuthAndReturnPlayer = async (ctx) => {
   try {
@@ -53,9 +57,47 @@ module.exports = {
       return ctx.replyWithMarkdown(messages.shopLowFundsMessage(), keyboards.shopBackKeyboard());
     }
 
+    // Проверка на совместимость с имеющимся процессором
+    const processorSocket = getProcessorSocketById(player.processorId);
+    const motherboardSockets = motherboard.sockets;
+    if (_.indexOf(motherboardSockets, processorSocket) === -1) {
+      return ctx.replyWithMarkdown(
+        messages.shopWrongMotherboardByProcessorSocketMessage(), keyboards.shopBackKeyboard(),
+      );
+    }
+
+    // // Проверка на совместимость с типом имеющейся оперативной памяти
+    // const ramType = getRamTypeById(player.ramId);
+    // const motherboardRamTypes = motherboard.ramTypes;
+    // if (_.indexOf(motherboardRamTypes, ramType) === -1) {
+    //   return ctx.replyWithMarkdown(messages.shopWrongMotherboardByRamTypeMessage(), keyboards.shopBackKeyboard());
+    // }
+    //
+    // // Проверка на совместимость с размером имеющейся оперативной памяти
+    // const ramSize = getRamValueById(player.ramId);
+    // const motherboardMaxRamSize = motherboard.maxRam;
+    // if (motherboardMaxRamSize < ramSize) {
+    //   return ctx.replyWithMarkdown(messages.shopWrongMotherboardByRamSizeMessage(), keyboards.shopBackKeyboard());
+    // }
+
+    // Проверка на совместимость с типом имеющегося жесткого диска
+    const diskType = getDiskTypeById(player.diskId);
+    const motherboardDiskTypes = motherboard.diskTypes;
+    if (_.indexOf(motherboardDiskTypes, diskType) === -1) {
+      return ctx.replyWithMarkdown(messages.shopWrongMotherboardByDiskTypeMessage(), keyboards.shopBackKeyboard());
+    }
+
+    // Проверка на совместимость с типом имеющейся видеокарты
+    const videoCardType = getVideoCardTypeById(player.videocardId);
+    const motherboardVideoCardTypes = motherboard.videocardTypes;
+    if (_.indexOf(motherboardVideoCardTypes, videoCardType) === -1) {
+      return ctx.replyWithMarkdown(messages.shopWrongMotherboardByVideoCardTypeMessage(), keyboards.shopBackKeyboard());
+    }
+
     try {
       const isSuccessBuy = buyDetail({
         chatId: ctx.chat.id,
+        player,
         detailType: `motherboard`,
         detailId: idToBuy,
         spentVirtualMoney: motherboard.price,

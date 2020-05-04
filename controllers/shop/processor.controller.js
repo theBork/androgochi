@@ -7,6 +7,7 @@ const { updateStatus } = require(`../status.controller`);
 const { getPlayerByChatId, buyDetail } = require(`../../models/player.model`);
 const { parseError } = require(`../../utils/helpers/common`);
 const { getProcessors, getProcessorObjectById } = require(`../../models/processor.model`);
+const { getMotherboardSocketsById } = require(`../../models/motherboard.model`);
 
 const checkAuthAndReturnPlayer = async (ctx) => {
   try {
@@ -52,11 +53,17 @@ module.exports = {
     if (player.virtualMoney < processor.price) {
       return ctx.replyWithMarkdown(messages.shopLowFundsMessage(), keyboards.shopBackKeyboard());
     }
-    // TODO Socket implementation
+
+    const motherboardSockets = getMotherboardSocketsById(player.motherboardId);
+
+    if (_.indexOf(motherboardSockets, processor.socket) === -1) {
+      return ctx.replyWithMarkdown(messages.shopWrongProcessorMessage(), keyboards.shopBackKeyboard());
+    }
 
     try {
       const isSuccessBuy = buyDetail({
         chatId: ctx.chat.id,
+        player,
         detailType: `processor`,
         detailId: idToBuy,
         spentVirtualMoney: processor.price,
