@@ -5,6 +5,7 @@ const { updateStatus } = require(`./status.controller`);
 const { getPlayerByChatId } = require(`../models/player.model`);
 const { getTopPlayersByCryptoMoney } = require(`../models/database/player.db`);
 const { toCamelCase, parseError } = require(`../utils/helpers/common`);
+const { ratingMiningMessage } = require(`../models/layout/messages/rating`);
 
 const checkAuthAndReturnPlayer = async (ctx) => {
   try {
