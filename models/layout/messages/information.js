@@ -30,7 +30,7 @@ module.exports = {
     `\n${emoji.videoCard}Видеокарта: _${videoCardName}_` +
     `\n${emoji.battery}Аккумулятор: _${batteryName}_` +
     `\n${emoji.plug}ЗУ: _${adapterName}_ ${isAdapterFirst ? '' : `(использовано ${adapterUses} из ${adapterResource} раз)`}` +
-    `\n\n${emoji.card}Сумма в криптовалюте: _${cryptoMoney}_` +
-    `\n${emoji.money}Сумма в рублях: _${virtualMoney}_`
+    `\n\n${emoji.card}Сумма в робокоинах: _${cryptoMoney}_` +
+    `\n${emoji.money}Сумма в роборублях: _${virtualMoney}_`
   },
 }
