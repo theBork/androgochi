@@ -2,8 +2,8 @@ const emoji = require(`../../../utils/emoji`);
 const _ = require(`lodash`);
 
 module.exports = {
-  ratingMainMessage: (arrayOfRows) => {
-    let messageBody = `${emoji.chart} ТОП ИГРОКОВ ПО РОБОКОИНАМ\n`;
+  ratingMiningMessage: (arrayOfRows) => {
+    let messageBody = `${emoji.chart} ТОП ИГРОКОВ ПО МАЙНИНГУ\n`;
     if (!_.size(arrayOfRows)) {
       messageBody += `\nНе найдено игроков.`;
     } else {
