@@ -1,12 +1,11 @@
 const Scene = require('telegraf/scenes/base');
 
-const buttons = require(`../models/layout/buttons`);
+const _ = require(`lodash`);
+
 const controller = require(`../controllers/rating.controller`);
 
 const rating = new Scene(`rating`);
 
 rating.enter(controller.enter);
-rating.hears(buttons.back, controller.enterScene(`information`));
-rating.on('message', controller.reEnter);
-
+rating.on('message', (ctx) => ctx.scene.enter(`information`));
 module.exports = rating;
