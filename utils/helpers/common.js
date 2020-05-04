@@ -1,6 +1,5 @@
 const _ = require(`lodash`);
 
-
 const _objectToCamelCase = (obj) => {
   const camelCasedObj = {};
   if (!_.isObject(obj)) return obj;
@@ -78,4 +77,5 @@ module.exports = {
     // console.log(`Mining result output: `, result);
     return result;
   },
+  getBuyCommandRegexp: () => new RegExp(/^\/buy_[0-9]/),
 }

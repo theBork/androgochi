@@ -7,7 +7,7 @@ const information = new Scene(`information`);
 
 information.enter(controller.enter);
 information.hears(buttons.refresh, controller.reEnter);
-information.hears(buttons.shop, controller.enterScene(`shop`));
+information.hears(buttons.shop, controller.enterScene(`shop`)); // TODO: Change status to idle
 information.hears(buttons.statistic, controller.enterScene(`rating`));
 information.hears(buttons.exchange, controller.enterScene(`exchange`));
 information.hears(buttons.mining, controller.setStatus(`mining`));

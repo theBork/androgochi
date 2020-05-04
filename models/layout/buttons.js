@@ -21,11 +21,12 @@ module.exports.virtualToCrypto = `${emoji.money}${emoji.bank} Роборубли
 module.exports.decline = `${emoji.x} Отменить`;
 
 
-//Shop scene
+//Shop scene and its child scenes
 module.exports.motherboard = `${emoji.motherboard} Сис.платы`;
 module.exports.processor = `${emoji.sandClock} Процессоры`;
 module.exports.ram = `${emoji.ram} Опер.память`;
-module.exports.disc = `${emoji.disc} Жест.диск`;
+module.exports.disk = `${emoji.disk} Жест.диск`;
 module.exports.videoCard = `${emoji.videoCard} Видеокарта`;
 module.exports.battery = `${emoji.battery} Батарея`;
 module.exports.adapter = `${emoji.plug} ЗУ`;
+module.exports.info = `${emoji.info} Информация`;

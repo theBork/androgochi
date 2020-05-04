@@ -22,7 +22,14 @@ app.listen(port, () => {
 })
 
 const information = require('./scenes/information.scene');
-const shop = require('./scenes/shop.scene');
+const shop = require('./scenes/shop/index.scene');
+const motherboard = require('./scenes/shop/motherboard.scene');
+const processor = require('./scenes/shop/processor.scene');
+const ram = require('./scenes/shop/ram.scene');
+const disk = require('./scenes/shop/disk.scene');
+const videoCard = require('./scenes/shop/videoCard.scene');
+const battery = require('./scenes/shop/battery.scene');
+const adapter = require('./scenes/shop/adapter.scene');
 const rating = require('./scenes/rating.scene');
 const exchange = require('./scenes/exchange.scene');
 const registerScenes = require('./scenes/register.scene');
@@ -30,7 +37,20 @@ const registerScenes = require('./scenes/register.scene');
 const session = require('telegraf/session')
 const Stage = require('telegraf/stage')
 
-const stage = new Stage([information, shop, registerScenes, rating, exchange]);
+const stage = new Stage([
+  information,
+  shop,
+  motherboard,
+  processor,
+  ram,
+  disk,
+  videoCard,
+  battery,
+  adapter,
+  registerScenes,
+  rating,
+  exchange
+]);
 
 bot.use(session());
 bot.use(stage.middleware());

@@ -11,9 +11,13 @@ module.exports = {
     cryptoMoney,
     virtualMoney,
     voltageValue,
+    motherboardId,
+    processorId,
+    ramId,
+    diskId,
+    videoCardId,
     batteryId,
     adapterId,
-    processorId,
     creationDate,
   }) => {
     const [row] = await db.query(
@@ -24,6 +28,7 @@ module.exports = {
       'system_version_id, ' +
       'creation_date, ' +
       'crypto_money, ' +
+      'crypto_accumulator, ' +
       'virtual_money, ' +
       'status_id, ' +
       'status_last_update, ' +
@@ -31,14 +36,20 @@ module.exports = {
       'voltage_last_update, ' +
       'battery_id, ' +
       'adapter_id, ' +
-      'processor_id)' +
-      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'adapter_uses, ' + //Manual value
+      'motherboard_id, ' +
+      'processor_id, ' +
+      'ram_id, ' +
+      'disk_id, ' +
+      'videocard_id)' +
+      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?)',
       [
         chatId,
         playerName,
         systemId,
         systemVersionId,
         creationDate,
+        cryptoMoney,
         cryptoMoney,
         virtualMoney,
         statusId,
@@ -47,7 +58,11 @@ module.exports = {
         creationDate,
         batteryId,
         adapterId,
+        motherboardId,
         processorId,
+        ramId,
+        diskId,
+        videoCardId,
       ],
     );
     return row;
@@ -83,6 +98,20 @@ module.exports = {
     const [rows] = await db.query(
       `UPDATE players SET crypto_money=crypto_money+?, virtual_money=virtual_money+? WHERE chat_id=?`,
       [cryptoMoneyIncreaseValue, virtualMoneyIncreaseValue, chatId],
+    );
+    return rows;
+  },
+  buyDetail: async ({ chatId, detailType, detailId, spentVirtualMoney }) => {
+    const [rows] = await db.query(
+      `UPDATE players SET ${detailType}_id=?, virtual_money=virtual_money-? WHERE chat_id=?`,
+      [detailId, spentVirtualMoney, chatId],
+    );
+    return rows;
+  },
+  buyAdapter: async ({ chatId, detailId, spentVirtualMoney }) => {
+    const [rows] = await db.query(
+      `UPDATE players SET adapter_id=?, adapter_uses=0, virtual_money=virtual_money-? WHERE chat_id=?`,
+      [detailId, spentVirtualMoney, chatId],
     );
     return rows;
   },

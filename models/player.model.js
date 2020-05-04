@@ -3,13 +3,23 @@ const _ = require(`lodash`);
 const START_CRYPTO_MONEY = 0;
 const START_VIRTUAL_MONEY = 0;
 
-const { createNewPlayer, getPlayerByChatId, increaseMoneyValues } = require(`../models/database/player.db`);
+const {
+  createNewPlayer,
+  getPlayerByChatId,
+  increaseMoneyValues,
+  buyDetail: buyDetailDb,
+  buyAdapter: buyAdapterDb
+} = require(`../models/database/player.db`);
 const { getDefaultStatusId } = require(`./status.model`);
 const { getFirstVersionOfSystem } = require(`./system.model`);
+const { getFirstVersionOfMotherboard } = require(`./motherboard.model`);
+const { getFirstVersionOfProcessor } = require(`./processor.model`);
+const { getFirstVersionOfRam } = require(`./ram.model`);
+const { getFirstVersionOfDisk } = require(`./disk.model`);
+const { getFirstVersionOfVideoCard } = require(`./videoCard.model`);
 const { getFirstVersionOfBattery, getBatteryValueById } = require(`./battery.model`);
 const { getFirstVersionOfAdapter } = require(`./adapter.model`);
-const { getFirstVersionOfProcessor } = require(`./processor.model`);
-const { toCamelCase } = require(`../utils/helpers/common`);
+const { toCamelCase, parseDatabaseUpdateResponse } = require(`../utils/helpers/common`);
 
 
 module.exports = {
@@ -27,9 +37,13 @@ module.exports = {
         cryptoMoney: START_CRYPTO_MONEY,
         virtualMoney: START_VIRTUAL_MONEY,
         voltageValue: batteryValue,
+        motherboardId: getFirstVersionOfMotherboard(),
+        processorId: getFirstVersionOfProcessor(),
+        ramId: getFirstVersionOfRam(),
+        diskId: getFirstVersionOfDisk(),
+        videoCardId: getFirstVersionOfVideoCard(),
         batteryId,
         adapterId: getFirstVersionOfAdapter(),
-        processorId: getFirstVersionOfProcessor(),
       });
       return { ok: true };
     } catch (e) {
@@ -51,6 +65,18 @@ module.exports = {
   updateMoneyValues: async ({ chatId, cryptoMoneyIncreaseValue, virtualMoneyIncreaseValue }) => {
     try {
       const response = await increaseMoneyValues({ chatId, cryptoMoneyIncreaseValue, virtualMoneyIncreaseValue });
+      return !!response;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  },
+  buyDetail: async ({ chatId, detailType, detailId, spentVirtualMoney }) => {
+    const buyFunction = detailType === `adapter` ? buyAdapterDb : buyDetailDb;
+    try {
+      const response = parseDatabaseUpdateResponse(await buyFunction({
+        chatId, detailType, detailId, spentVirtualMoney,
+      }));
       return !!response;
     } catch (e) {
       console.log(e);

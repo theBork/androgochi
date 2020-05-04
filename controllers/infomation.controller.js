@@ -8,8 +8,12 @@ const { getPlayerByChatId } = require(`../models/player.model`);
 const { getStatusIdByType, getStatusNameById, getStatusTypeById } = require(`../models/status.model`);
 const { getSystemNameById, getSystemVersionNameById } = require(`../models/system.model`);
 const { getBatteryValueById, getBatteryNameById } = require(`../models/battery.model`);
-const { getAdapterNameById } = require(`../models/adapter.model`);
+const { getFirstVersionOfAdapter, getAdapterNameById, getAdapterResourceById } = require(`../models/adapter.model`);
+const { getMotherboardNameById } = require(`../models/motherboard.model`);
 const { getProcessorNameById } = require(`../models/processor.model`);
+const { getRamNameById } = require(`../models/ram.model`);
+const { getDiskNameById } = require(`../models/disk.model`);
+const { getVideoCardNameById } = require(`../models/videoCard.model`);
 const { getVoltageLevelInPercents } = require(`../utils/helpers/common`);
 
 module.exports = {
@@ -21,6 +25,8 @@ module.exports = {
     }
 
     const statusType = getStatusTypeById(player.statusId);
+    const firstVersionOfAdapter = getFirstVersionOfAdapter();
+    const isAdapterFirst = player.adapterId === firstVersionOfAdapter;
     await ctx.replyWithMarkdown(
       messages.informationMainMessage({
         playerName: player.playerName,
@@ -31,9 +37,16 @@ module.exports = {
           batteryValue: getBatteryValueById(player.batteryId),
           voltageValue: player.voltageValue,
         }),
-        batteryName: getBatteryNameById(player.batteryId),
-        adapterName: getAdapterNameById(player.adapterId),
+        motherboardName: getMotherboardNameById(player.motherboardId),
         processorName: getProcessorNameById(player.processorId),
+        ramName: getRamNameById(player.ramId),
+        diskName: getDiskNameById(player.diskId),
+        videoCardName: getVideoCardNameById(player.videocardId),
+        batteryName: getBatteryNameById(player.batteryId),
+        isAdapterFirst,
+        adapterName: getAdapterNameById(player.adapterId),
+        adapterUses: player.adapterUses,
+        adapterResource: getAdapterResourceById(player.adapterId),
         cryptoMoney: player.cryptoMoney,
         virtualMoney: player.virtualMoney,
       }),

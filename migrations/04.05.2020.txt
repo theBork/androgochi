@@ -1,0 +1,3 @@
+- добавлены поля motherboard_id, ram_id, disk_id, videocard_id типа SMALLINT (начальное значение: 1)
+- добавено поле crypto_accumulator типа BIGINT
+- добавлено поле adapter_uses типа SMALLINT (начальное значение: 0)
