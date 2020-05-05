@@ -2,6 +2,7 @@ const _ = require(`lodash`);
 
 const { updateStatus } = require("./status.controller");
 const { getPlayerByChatId, updateMoneyValues } = require("../models/player.model");
+const { getDiskValueById } = require("../models/disk.model");
 
 const {
   exchangeEnterMessage,
@@ -11,7 +12,8 @@ const {
   exchangeNotNumberMessage,
   exchangeBigNumberMessage,
   exchangeErrorMessage,
-} = require(`../models/layout/messages/exchange`);
+  exchangeLowDiskSpaceMessage,
+} = require(`../models/layout/messages/exchange`); // TODO: Replace with message variable
 
 const {
   exchangeMainKeyboard,
@@ -132,6 +134,10 @@ module.exports = {
           return ctx.replyWithMarkdown(exchangeBigNumberMessage(), exchangeDeclineKeyboard());
         }
         const cryptoMoneyIncreaseValue = _.round(moneyToExchange * virtualToCryptoRate, MONEY_ROUND_VALUE);
+        const diskSpace = getDiskValueById(player.diskId);
+        if (_.toFinite(player.cryptoMoney) + cryptoMoneyIncreaseValue > diskSpace) {
+          return ctx.replyWithMarkdown(exchangeLowDiskSpaceMessage(), exchangeDeclineKeyboard());
+        }
         const virtualMoneyIncreaseValue = -moneyToExchange;
         const isSuccessIncrease = await updateMoneyValues({
           chatId,

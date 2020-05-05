@@ -25,7 +25,7 @@ module.exports = {
   enter: async (ctx) => {
     try {
       const player = await checkAuthAndReturnPlayer(ctx);
-      const topPlayersResponse = await getTopPlayersByCryptoMoney(5);
+      const topPlayersResponse = await getTopPlayersByCryptoMoney(10);
       const topPlayers = toCamelCase(topPlayersResponse);
       if (!topPlayers) throw new Error(`Ошибка получения райтинга по криптовалюте`);
       await ctx.replyWithMarkdown(

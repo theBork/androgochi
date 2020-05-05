@@ -77,19 +77,7 @@ module.exports = {
         const batteryValue = getBatteryValueById(player.batteryId);
         const chargeValue = calculateChargingResult({ adapterValue, start, end });
         newVoltageValue = _.toFinite(player.voltageValue) + chargeValue;
-        if (newVoltageValue > batteryValue) {
-          const chargingTime = getChargingTime({ adapterValue, batteryValue, startValue: player.voltageValue });
-          const calculatingPeriodTime = +new Date() - player.statusLastUpdate;
-          const idleTime = calculatingPeriodTime - chargingTime;
-          let dischargeValue = calculateDischargingResult({ amperage, start: 0, end: idleTime });
-          newVoltageValue = batteryValue - dischargeValue;
-          if (newVoltageValue < 0) {
-            newVoltageValue = 0;
-            _newStatusId = getStatusIdByType(`off`);
-          } else {
-            _newStatusId = getStatusIdByType(`idle`);
-          }
-        }
+        if (newVoltageValue > batteryValue) newVoltageValue = batteryValue;
       }
       await updatePlayerScores({
         chatId,
