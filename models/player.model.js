@@ -1,7 +1,7 @@
 const _ = require(`lodash`);
 
-const START_CRYPTO_MONEY = 50;
-const START_VIRTUAL_MONEY = 0;
+const START_CRYPTO_MONEY = 0;
+const START_VIRTUAL_MONEY = 100;
 
 const {
   createNewPlayer,

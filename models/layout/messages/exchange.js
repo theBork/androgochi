@@ -4,7 +4,7 @@ const _ = require(`lodash`);
 module.exports = {
   exchangeEnterMessage: ({ cryptoMoney, virtualMoney, cryptoToVirtualRate, virtualToCryptoRate }) => {
     return `${emoji.bank} ОБМЕННЫЙ ПУНКТ` +
-      `\n\nКЗдесь вы можете обменять робокоины на роборубли и обратно. Курс обмена меняется раз в час.` +
+      `\n\nЗдесь вы можете обменять робокоины на роборубли и обратно. Курс обмена меняется раз в час.` +
       `\n\n*Доступные средства*` +
       `\nРобокоины: _${cryptoMoney}_` +
       `\nРоборубли: _${virtualMoney}_` +
