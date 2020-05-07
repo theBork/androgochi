@@ -1,4 +1,3 @@
-const fs = require(`fs`);
 const heapdump = require('heapdump');
 
 let nextNotificationSize = 50;
