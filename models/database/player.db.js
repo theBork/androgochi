@@ -94,14 +94,25 @@ module.exports = {
     newAdapterId,
     newAdapterUsesValue,
     timestamp,
-    statusId
+    statusId,
+    ramUsedValue,
   }) => {
     const [rows] = await db.query(
       `UPDATE players ` +
       `SET status_id=?, voltage_value=?, crypto_money=?, crypto_accumulator=crypto_accumulator+?, ` +
-      `adapter_id=?, adapter_uses=?, status_last_update=? ` +
+      `adapter_id=?, adapter_uses=?, status_last_update=?, ram_used=? ` +
       `WHERE chat_id=?`,
-      [statusId, voltageValue, cryptoMoneyValue, miningValue, newAdapterId, newAdapterUsesValue, timestamp, chatId],
+      [
+        statusId,
+        voltageValue,
+        cryptoMoneyValue,
+        miningValue,
+        newAdapterId,
+        newAdapterUsesValue,
+        timestamp,
+        ramUsedValue,
+        chatId
+      ],
     );
     return rows;
   },
@@ -116,6 +127,10 @@ module.exports = {
       `UPDATE players SET crypto_money=crypto_money+?, virtual_money=virtual_money+? WHERE chat_id=?`,
       [cryptoMoneyIncreaseValue, virtualMoneyIncreaseValue, chatId],
     );
+    return rows;
+  },
+  increaseUsedRam: async ({ chatId, ramAmount }) => {
+    const [rows] = await db.query(`UPDATE players SET ram_used=ram_used+? WHERE chat_id=?`, [ramAmount, chatId]);
     return rows;
   },
   buyDetail: async ({ chatId, detailType, detailId, spentVirtualMoney }) => {

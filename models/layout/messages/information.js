@@ -8,13 +8,14 @@ module.exports = {
     systemName,
     versionName,
     batteryName,
-                             isAdapterFirst,
+    isAdapterFirst,
     adapterName,
     adapterUses,
     adapterResource,
     motherboardName,
     processorName,
     ramName,
+    ramUsed,
     diskName,
     videoCardName,
     voltagePercents,
@@ -25,7 +26,7 @@ module.exports = {
     `\n\n${emoji.tv}Система: _${systemName} ${versionName}_` +
     `\n${emoji.motherboard}Системная плата: _${motherboardName}_` +
     `\n${emoji.sandClock}Процессор: _${processorName}_` +
-    `\n${emoji.ram}Оперативная память: _${ramName}_` +
+    `\n${emoji.ram}ОЗУ: _${ramName}_ (занято: ${ramUsed}Мб)` +
     `\n${emoji.disk}Жесткий диск: _${diskName}_` +
     `\n${emoji.videoCard}Видеокарта: _${videoCardName}_` +
     `\n${emoji.battery}Аккумулятор: _${batteryName}_` +

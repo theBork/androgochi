@@ -40,6 +40,7 @@ module.exports = {
         motherboardName: getMotherboardNameById(player.motherboardId),
         processorName: getProcessorNameById(player.processorId),
         ramName: getRamNameById(player.ramId),
+        ramUsed: player.ramUsed,
         diskName: getDiskNameById(player.diskId),
         videoCardName: getVideoCardNameById(player.videocardId),
         batteryName: getBatteryNameById(player.batteryId),

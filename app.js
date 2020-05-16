@@ -49,6 +49,8 @@ const adapter = require('./scenes/shop/adapter.scene');
 const rating = require('./scenes/rating.scene');
 const exchange = require('./scenes/exchange.scene');
 const registerScenes = require('./scenes/register.scene');
+const missions = require('./scenes/missions/index.scene');
+const missionsAdditional = require('./scenes/missions/additional/index.scene');
 
 const session = require('telegraf/session')
 const Stage = require('telegraf/stage')
@@ -65,7 +67,9 @@ const stage = new Stage([
   adapter,
   registerScenes,
   rating,
-  exchange
+  exchange,
+  missions,
+  missionsAdditional,
 ]);
 
 bot.use(session());

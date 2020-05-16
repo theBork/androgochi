@@ -6,17 +6,22 @@ const { getAdapterValueById, getFirstVersionOfAdapter, getAdapterResourceById } 
 const { getBatteryValueById } = require(`../models/battery.model`);
 const { getStatusTypeById, getStatusIdByType } = require(`../models/status.model`);
 const { updatePlayerScores } = require(`../models/database/player.db`);
+const { getUsedRamOfPlayer, deleteUsedRamOfPlayerBeforeTimestamp } = require(`../models/database/ramUsed.db`);
 
 const {
   calculateMiningResult,
   calculateMiningResultWhenTurnedOff,
   calculateDischargingResult,
   calculateChargingResult,
+  parseDatabaseResponse,
+  toCamelCase,
 } = require(`../utils/helpers/common`);
 
 const { getChargingTime } = require(`../utils/helpers/common`);
 const { getAmperage } = require(`../utils/helpers/amperage`);
 const { getPerformance } = require(`../utils/helpers/performance`);
+
+const RAM_REGENERATION_TIME = 1000 * 60 * 60 * 4;
 
 module.exports = {
   updateStatus: async ({ chatId, newStatusId }) => {
@@ -29,6 +34,15 @@ module.exports = {
       const start = player.statusLastUpdate;
       const end = +new Date();
 
+      const dateToDeleteRamUsedBefore = end - RAM_REGENERATION_TIME;
+      await deleteUsedRamOfPlayerBeforeTimestamp({chatId, timestamp: dateToDeleteRamUsedBefore});
+      const ramUsed = parseDatabaseResponse({ response: await getUsedRamOfPlayer({ chatId }), normalize: toCamelCase });
+      let newRamUsedValue = 0;
+      if (_.size(ramUsed)) {
+        ramUsed.forEach((item) => {
+          newRamUsedValue += item.ramAmount;
+        });
+      }
       let amperage = getAmperage(player);
       let newVoltageValue = _.toFinite(player.voltageValue);
       let cryptoMoneyValue = _.toFinite(player.cryptoMoney);
@@ -88,6 +102,7 @@ module.exports = {
         miningValue,
         newAdapterId,
         statusId: _newStatusId,
+        ramUsedValue: newRamUsedValue,
       });
     } catch (e) {
       console.log(e);
