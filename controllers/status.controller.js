@@ -29,8 +29,7 @@ module.exports = {
       const end = +new Date();
 
       // TODO: Think about another type of this field in DB
-      let newStatusTimeTriggerValue = player.statusTimeTrigger ? +player.statusTimeTrigger : ``;
-
+      let newStatusTimeTriggerValue = '';
       let newTriggerActionValue = 0;
 
       const adapterValue = getAdapterValueById(player.adapterId);
