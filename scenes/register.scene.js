@@ -17,6 +17,9 @@ const nameSelectionStep = ctx => {
   const name = _.get(ctx, `message.text`);
   if (!name) return ctx.reply(`Не введено имя. Введите еще раз`);
   if (_.size(name) > 16) return ctx.reply(`Имя слишком длинное. Попробуйте другое`);
+  if (_.size(name.match(/[^A-Za-zА-Яа-я0-9-]/gi))) {
+    return ctx.reply(`В вашем имени есть запрещенные символы. Можно использовать только буквы, цифры и тире.`);
+  }
   ctx.scene.state.playerName = name;
   ctx.replyWithMarkdown(
     `Отлично. Твоего Андроида будут звать *${name}*.\nКакой тип операционной системы установить на андроида?
