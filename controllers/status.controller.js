@@ -101,7 +101,7 @@ module.exports = {
         if (newVoltageValue < batteryValue) {
           const timeToNotification = getChargingTime({ adapterValue, batteryValue, startValue: newVoltageValue });
           const statusTimeTriggerValue = +new Date() + timeToNotification;
-          if (!player.statusTimeTrigger || newStatusTimeTriggerValue > statusTimeTriggerValue) {
+          if (!newStatusTimeTriggerValue || newStatusTimeTriggerValue > statusTimeTriggerValue) {
             newStatusTimeTriggerValue = statusTimeTriggerValue;
             newTriggerActionValue = 1; // Charge complete
           }
