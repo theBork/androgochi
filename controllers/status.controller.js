@@ -51,7 +51,7 @@ module.exports = {
         } else {
           const timeToNotification = getDischargingTime({ amperage, startValue: newVoltageValue });
           const statusTimeTriggerValue = +new Date() + timeToNotification;
-          if (!player.statusTimeTrigger || newStatusTimeTriggerValue > statusTimeTriggerValue) {
+          if (!newStatusTimeTriggerValue || newStatusTimeTriggerValue > statusTimeTriggerValue) {
             newStatusTimeTriggerValue = statusTimeTriggerValue;
             newTriggerActionValue = 2; // Discharge
           }
@@ -86,7 +86,7 @@ module.exports = {
           cryptoMoneyValue += miningValue;
           const timeToNotification = getMiningTime({ performance, diskSpace, cryptoMoneyValue });
           const statusTimeTriggerValue = +new Date() + timeToNotification;
-          if (!player.statusTimeTrigger || newStatusTimeTriggerValue > statusTimeTriggerValue) {
+          if (!newStatusTimeTriggerValue || newStatusTimeTriggerValue > statusTimeTriggerValue) {
             newStatusTimeTriggerValue = statusTimeTriggerValue;
             newTriggerActionValue = 3; // Full disk
           }
