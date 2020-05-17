@@ -94,14 +94,27 @@ module.exports = {
     newAdapterId,
     newAdapterUsesValue,
     timestamp,
-    statusId
+    statusId,
+    statusTimeTriggerValue,
+    triggerActionValue,
   }) => {
     const [rows] = await db.query(
       `UPDATE players ` +
       `SET status_id=?, voltage_value=?, crypto_money=?, crypto_accumulator=crypto_accumulator+?, ` +
-      `adapter_id=?, adapter_uses=?, status_last_update=? ` +
+      `adapter_id=?, adapter_uses=?, status_last_update=?, status_time_trigger=?, trigger_action=? ` +
       `WHERE chat_id=?`,
-      [statusId, voltageValue, cryptoMoneyValue, miningValue, newAdapterId, newAdapterUsesValue, timestamp, chatId],
+      [
+        statusId,
+        voltageValue,
+        cryptoMoneyValue,
+        miningValue,
+        newAdapterId,
+        newAdapterUsesValue,
+        timestamp,
+        statusTimeTriggerValue,
+        triggerActionValue,
+        chatId
+      ],
     );
     return rows;
   },
@@ -150,6 +163,18 @@ module.exports = {
     const [rows] = await db.query(
       `UPDATE players SET adapter_id=?, adapter_uses=0, virtual_money=virtual_money-? WHERE chat_id=?`,
       [detailId, spentVirtualMoney, chatId],
+    );
+    return rows;
+  },
+  getPlayersByStatusTimeTriggerFilter: async ({ to }) => {
+    const [rows] = await db.query(
+      `SELECT * FROM players WHERE status_time_trigger>0 AND status_time_trigger<?`, [to],
+    );
+    return rows;
+  },
+  removeStatusTimeTriggerOfUser: async ({ chatId }) => {
+    const [rows] = await db.query(
+      `UPDATE players SET status_time_trigger='', trigger_action=0 WHERE chat_id=?`, [chatId],
     );
     return rows;
   },

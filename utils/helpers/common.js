@@ -30,6 +30,9 @@ module.exports = {
     const data = _.get(response, `data`);
     return _.isFunction(normalize) ? normalize(data) : data;
   },
+  parseDatabaseResponse: ({ response, normalize }) => {
+    return _.isFunction(normalize) ? normalize(response) : response;
+  },
   parseError: (ctx, { error, defaultMessage = `Произошла ошибка` }) => {
     console.log(error);
     ctx.reply(defaultMessage);
@@ -38,17 +41,24 @@ module.exports = {
   parseDatabaseUpdateResponse: ({ response }) => _.get(response, `affectedRows`) === 1,
   calculateDischargingResult: ({ amperage, start, end }) => {
     const calculatingTime = end - start;
-    // console.log(`Discharging result input: `, amperage, calculatingTime);
     if (calculatingTime <= 0) return 0;
     const amperagePerMs = amperage / 60 / 60 / 1000;
     const result = _.ceil(amperagePerMs * calculatingTime, 4);
-    // console.log(`Discharging result output: `, result);
     return result;
+  },
+  getDischargingTime: ({ amperage, startValue }) => {
+    const amperagePerMs = amperage / 60 / 60 / 1000;
+    return _.ceil(startValue / amperagePerMs);
+  },
+  getMiningTime: ({ performance, diskSpace, cryptoMoneyValue }) => {
+    const maximumMiningValue = diskSpace - cryptoMoneyValue;
+    const miningTime = maximumMiningValue / performance * 1000;
+    return _.ceil(miningTime);
   },
   getChargingTime: ({ adapterValue, batteryValue, startValue }) => {
     const chargedValue = batteryValue - startValue;
     const amperagePerMs = adapterValue / 60 / 60 / 1000;
-    return chargedValue / amperagePerMs;
+    return _.ceil(chargedValue / amperagePerMs);
   },
   calculateChargingResult: ({ adapterValue, start, end }) => {
     const calculatingTime = end - start;
@@ -78,4 +88,8 @@ module.exports = {
     return result;
   },
   getBuyCommandRegexp: () => new RegExp(/^\/buy_[0-9]/),
+  getRandomNumber: (min, max) => {
+    let rand = min - 0.5 + Math.random() * (max - min + 1);
+    return Math.round(rand);
+  }
 }

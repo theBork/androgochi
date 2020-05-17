@@ -13,8 +13,7 @@ const {
   calculateDischargingResult,
   calculateChargingResult,
 } = require(`../utils/helpers/common`);
-
-const { getChargingTime } = require(`../utils/helpers/common`);
+const { getChargingTime, getDischargingTime, getMiningTime } = require(`../utils/helpers/common`);
 const { getAmperage } = require(`../utils/helpers/amperage`);
 const { getPerformance } = require(`../utils/helpers/performance`);
 
@@ -29,25 +28,39 @@ module.exports = {
       const start = player.statusLastUpdate;
       const end = +new Date();
 
+      let newStatusTimeTriggerValue = +player.statusTimeTrigger; // TODO: Think about another type of this field in DB
+      let newTriggerActionValue = 0;
+
+      const adapterValue = getAdapterValueById(player.adapterId);
+      const batteryValue = getBatteryValueById(player.batteryId);
+
       let amperage = getAmperage(player);
-      let newVoltageValue = _.toFinite(player.voltageValue);
-      let cryptoMoneyValue = _.toFinite(player.cryptoMoney);
+      let newVoltageValue = +player.voltageValue;
+      let cryptoMoneyValue = +player.cryptoMoney;
       let miningValue = 0;
-      let newAdapterUsesValue = _.toFinite(player.adapterUses);
+      let newAdapterUsesValue = +player.adapterUses;
       let newAdapterId = player.adapterId;
       if (statusType === `mining` || statusType === `idle`) {
+
         let dischargeValue = calculateDischargingResult({ amperage, start, end });
-        newVoltageValue = _.toFinite(player.voltageValue) - dischargeValue;
+        newVoltageValue = +player.voltageValue - dischargeValue;
         if (newVoltageValue < 0) {
           newVoltageValue = 0;
           _newStatusId = getStatusIdByType(`off`);
+        } else {
+          const timeToNotification = getDischargingTime({ amperage, startValue: newVoltageValue });
+          const statusTimeTriggerValue = +new Date() + timeToNotification;
+          if (!player.statusTimeTrigger || newStatusTimeTriggerValue > statusTimeTriggerValue) {
+            newStatusTimeTriggerValue = statusTimeTriggerValue;
+            newTriggerActionValue = 2; // Discharge
+          }
         }
       }
 
       if (newStatusType === `charge` && statusType !== `charge`) newAdapterUsesValue++;
       if (statusType === `charge` && !!newStatusType) {
         const adapterResource = getAdapterResourceById(player.adapterId);
-        const adapterUses = _.toFinite(player.adapterUses);
+        const adapterUses = +player.adapterUses;
         if (adapterUses >= adapterResource) {
           newAdapterId = getFirstVersionOfAdapter();
           newAdapterUsesValue = 0;
@@ -68,17 +81,32 @@ module.exports = {
           _newStatusId = getStatusIdByType(`idle`);
           miningValue = diskSpace - cryptoMoneyValue;
           cryptoMoneyValue += miningValue;
-
         } else {
           cryptoMoneyValue += miningValue;
+          const timeToNotification = getMiningTime({ performance, diskSpace, cryptoMoneyValue });
+          const statusTimeTriggerValue = +new Date() + timeToNotification;
+          if (!player.statusTimeTrigger || newStatusTimeTriggerValue > statusTimeTriggerValue) {
+            newStatusTimeTriggerValue = statusTimeTriggerValue;
+            newTriggerActionValue = 3; // Full disk
+          }
         }
       } else if (statusType === `charge`) {
-        const adapterValue = getAdapterValueById(player.adapterId);
-        const batteryValue = getBatteryValueById(player.batteryId);
         const chargeValue = calculateChargingResult({ adapterValue, start, end });
-        newVoltageValue = _.toFinite(player.voltageValue) + chargeValue;
+        newVoltageValue = +player.voltageValue + chargeValue;
         if (newVoltageValue > batteryValue) newVoltageValue = batteryValue;
       }
+
+      if (statusType === `charge`) {
+        if (newVoltageValue < batteryValue) {
+          const timeToNotification = getChargingTime({ adapterValue, batteryValue, startValue: newVoltageValue });
+          const statusTimeTriggerValue = +new Date() + timeToNotification;
+          if (!player.statusTimeTrigger || newStatusTimeTriggerValue > statusTimeTriggerValue) {
+            newStatusTimeTriggerValue = statusTimeTriggerValue;
+            newTriggerActionValue = 1; // Charge complete
+          }
+        }
+      }
+
       await updatePlayerScores({
         chatId,
         voltageValue: newVoltageValue,
@@ -88,6 +116,8 @@ module.exports = {
         miningValue,
         newAdapterId,
         statusId: _newStatusId,
+        statusTimeTriggerValue: newStatusTimeTriggerValue,
+        triggerActionValue: newTriggerActionValue,
       });
     } catch (e) {
       console.log(e);
