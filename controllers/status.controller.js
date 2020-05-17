@@ -50,6 +50,8 @@ module.exports = {
         } else {
           const timeToNotification = getDischargingTime({ amperage, startValue: newVoltageValue });
           const statusTimeTriggerValue = +new Date() + timeToNotification;
+          console.log(`mining updater`, timeToNotification, player.statusTimeTrigger, statusTimeTriggerValue);
+          console.log(`mining ifs`, !player.statusTimeTrigger, newStatusTimeTriggerValue > statusTimeTriggerValue);
           if (!player.statusTimeTrigger || newStatusTimeTriggerValue > statusTimeTriggerValue) {
             newStatusTimeTriggerValue = statusTimeTriggerValue;
             newTriggerActionValue = 2; // Discharge
@@ -106,7 +108,7 @@ module.exports = {
           }
         }
       }
-
+      console.log(`Before update values`, newStatusTimeTriggerValue, newTriggerActionValue);
       await updatePlayerScores({
         chatId,
         voltageValue: newVoltageValue,
