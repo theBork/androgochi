@@ -47,7 +47,7 @@ module.exports = {
         newVoltageValue = +player.voltageValue - dischargeValue;
         if (newVoltageValue < 0) {
           newVoltageValue = 0;
-          _newStatusId = getStatusIdByType(`off`);
+          if (newStatusType !== `charge`) _newStatusId = getStatusIdByType(`off`);
         } else {
           const timeToNotification = getDischargingTime({ amperage, startValue: newVoltageValue });
           const statusTimeTriggerValue = +new Date() + timeToNotification;
