@@ -9,6 +9,11 @@ module.exports = {
       `Элементы влияют на производительность майнинга и скорость разряда, а также на многое другое. ` +
       `\n\nПодробнее о том как изменится ваш андроид с теми или иными запчастями читайте в разделах запчастей.`
   },
+  processorMainMessage: ({ currentProcessor }) => {
+    return `${emoji.sandClock} ПРОЦЕССОРЫ` +
+      `\n\nВыберите сокет процессоров, которые вы хотите приобрести.` +
+      `\n\nСейчас установлено: _${currentProcessor}_.`;
+  },
   shopDetailsListMessage: ({ list, currentId }) => {
     let message = ``;
     if (_.size(list)) {

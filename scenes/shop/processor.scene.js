@@ -13,6 +13,6 @@ processor.hears(buttons.info, controller.information);
 processor.hears(buyCommandRegex, controller.buy);
 processor.hears(buttons.back, controller.reEnter);
 processor.hears(buttons.exit, controller.enterScene(`shop`));
-processor.on('message', controller.reEnter);
+processor.on(`message`, controller.section);
 
 module.exports = processor;
