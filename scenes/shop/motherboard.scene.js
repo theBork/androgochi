@@ -13,6 +13,6 @@ motherboard.hears(buttons.info, controller.information);
 motherboard.hears(buyCommandRegex, controller.buy);
 motherboard.hears(buttons.back, controller.reEnter);
 motherboard.hears(buttons.exit, controller.enterScene(`shop`));
-motherboard.on('message', controller.reEnter);
+motherboard.on('message', controller.section);
 
 module.exports = motherboard;

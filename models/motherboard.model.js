@@ -4,6 +4,7 @@ const data = require(`../data/motherboard.json`);
 
 module.exports = {
   getMotherboards: () => data,
+  // getMotherboardsBySocketName: (socketSlug) => _.get(_.find(data, (x) => x.id === id), `name`),
   getMotherboardObjectById: (id) => _.find(data, (x) => x.id === id),
   getMotherboardNameById: (id) => _.get(_.find(data, (x) => x.id === id), `name`),
   getMotherboardSocketsById: (id) => _.get(_.find(data, (x) => x.id === id), `sockets`),

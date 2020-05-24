@@ -5,9 +5,9 @@ const keyboards = require(`../../models/layout/keyboards/shop`);
 
 const { updateStatus } = require(`../status.controller`);
 const { getPlayerByChatId, buyDetail } = require(`../../models/player.model`);
-const { parseError } = require(`../../utils/helpers/common`);
-const { getMotherboards, getMotherboardObjectById } = require(`../../models/motherboard.model`);
-const { getProcessorSocketById } = require(`../../models/processor.model`);
+const { parseError, toCamelCase } = require(`../../utils/helpers/common`);
+const { getMotherboards, getMotherboardNameById, getMotherboardObjectById } = require(`../../models/motherboard.model`);
+const { getProcessors, getProcessorSocketById } = require(`../../models/processor.model`);
 const { getRamValueById, getRamTypeById } = require(`../../models/ram.model`);
 const { getDiskTypeById } = require(`../../models/disk.model`);
 const { getVideoCardTypeById } = require(`../../models/videoCard.model`);
@@ -30,10 +30,26 @@ const checkAuthAndReturnPlayer = async (ctx) => {
 module.exports = {
   enter: async (ctx) => {
     const player = await checkAuthAndReturnPlayer(ctx);
+    const processorsList = toCamelCase(getProcessors());
+    const sortedProcessorsList = processorsList.reduce((accumulator, item) => {
+      return _.indexOf(accumulator, item.socket) === -1 ? accumulator.concat([item.socket]) : accumulator;
+    }, []);
+    const currentMotherboardName = getMotherboardNameById(player.motherboardId);
+    await ctx.replyWithMarkdown(
+      messages.motherboardMainMessage({ currentMotherboard: currentMotherboardName }),
+      keyboards.typesKeyboard(sortedProcessorsList),
+    );
+  },
+  section: async (ctx) => {
+    const player = await checkAuthAndReturnPlayer(ctx);
+    const socketName = _.get(ctx, `message.text`);
     const list = getMotherboards();
+    const filteredList = _.filter(list, (x) => _.includes(x.sockets, socketName));
+    if (!_.size(filteredList)) return ctx.scene.reenter();
+    filteredList.sort((a, b) => a.price - b.price);
     await ctx.reply(
-      messages.shopDetailsListMessage({ list, currentId: player.motherboardId }),
-      keyboards.shopSectionKeyboard(),
+      messages.shopDetailsListMessage({ list: filteredList, currentId: player.motherboardId }),
+      keyboards.shopBackKeyboard(),
     );
   },
   information: async (ctx) => {

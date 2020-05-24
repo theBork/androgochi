@@ -8,7 +8,7 @@ module.exports = {
     [buttons.videoCard, buttons.battery],
     [buttons.adapter, buttons.exit],
     ]).oneTime().resize().extra(),
-  processorTypesKeyboard: (list) => {
+  typesKeyboard: (list) => {
     return Markup.keyboard([list, [buttons.info], [buttons.exit]]).oneTime().resize().extra()
   },
   shopSectionKeyboard: () => Markup.keyboard([[buttons.info], [buttons.exit]]).oneTime().resize().extra(),

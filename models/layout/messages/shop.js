@@ -14,6 +14,11 @@ module.exports = {
       `\n\nВыберите сокет процессоров, которые вы хотите приобрести.` +
       `\n\nСейчас установлено: _${currentProcessor}_.`;
   },
+  motherboardMainMessage: ({ currentMotherboard }) => {
+    return `${emoji.motherboard} СИСТЕМНЫЕ ПЛАНЫ` +
+      `\n\nВыберите сокет системной платы, которую вы хотите приобрести.` +
+      `\n\nСейчас установлено: _${currentMotherboard}_.`;
+  },
   shopDetailsListMessage: ({ list, currentId }) => {
     let message = ``;
     if (_.size(list)) {

@@ -32,14 +32,14 @@ const checkAuthAndReturnPlayer = async (ctx) => {
 module.exports = {
   enter: async (ctx) => {
     const player = await checkAuthAndReturnPlayer(ctx);
-    const list = toCamelCase(getProcessors());
+    const list = getProcessors();
     const sortedList = list.reduce((accumulator, item) => {
-      return _.indexOf(accumulator, item.socketText) === -1 ? accumulator.concat([item.socketText]) : accumulator;
+      return _.indexOf(accumulator, item.socket) === -1 ? accumulator.concat([item.socket]) : accumulator;
     }, []);
-    const currentProcessorName = getProcessorNameById(player.processorId)
+    const currentProcessorName = getProcessorNameById(player.processorId);
     await ctx.replyWithMarkdown(
       messages.processorMainMessage({ currentProcessor: currentProcessorName }),
-      keyboards.processorTypesKeyboard(sortedList),
+      keyboards.typesKeyboard(sortedList),
     );
   },
   section: async (ctx) => {
@@ -47,6 +47,7 @@ module.exports = {
     const socketName = _.get(ctx, `message.text`);
     const list = toCamelCase(getProcessorsBySocketName(socketName));
     if (!_.size(list)) return ctx.scene.reenter();
+    list.sort((a, b) => a.price - b.price);
     await ctx.reply(
       messages.shopDetailsListMessage({ list, currentId: player.processorId }),
       keyboards.shopBackKeyboard(),
@@ -75,7 +76,7 @@ module.exports = {
 
     const motherboardSockets = getMotherboardSocketsById(player.motherboardId);
 
-    if (_.indexOf(motherboardSockets, processor.socketSlug) === -1) {
+    if (_.indexOf(motherboardSockets, processor.socket) === -1) {
       return ctx.replyWithMarkdown(messages.shopWrongProcessorMessage(), keyboards.shopBackKeyboard());
     }
 
