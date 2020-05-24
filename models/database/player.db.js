@@ -72,6 +72,10 @@ module.exports = {
     const [rows] = await db.query(`SELECT * FROM players`);
     return rows;
   },
+  getPlayersActiveFromDate: async (date) => {
+    const [rows] = await db.query(`SELECT * FROM players WHERE status_last_update>?`, [date]);
+    return rows;
+  },
   getTopPlayersByCryptoMoney: async (limit) => {
     const [rows] = await db.query(`SELECT * FROM players ORDER BY crypto_accumulator DESC LIMIT ?`, [limit]);
     return rows;

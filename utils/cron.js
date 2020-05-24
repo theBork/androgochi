@@ -7,7 +7,7 @@ const {
   TIME_TO_SCHEDULE_GAME_NOTIFICATIONS,
 } = require(`../constants`);
 const { getOldestMessage, markNotificationAsSent } = require(`../models/database/notifications.db`);
-const { getAllPlayers, getPlayersByStatusTimeTriggerFilter } = require(`../models/database/player.db`);
+const { getAllPlayers, getPlayersActiveFromDate, getPlayersByStatusTimeTriggerFilter } = require(`../models/database/player.db`);
 const { parseDatabaseResponse, parseDatabaseUpdateResponse, toCamelCase } = require(`./helpers/common`);
 const { scheduleStatusReachMessage } = require(`./notifications`);
 
@@ -15,12 +15,14 @@ module.exports = {
   startNotificationScheduler: (bot) => {
     cron.schedule(UPDATE_NOTIFICATIONS_CRON_SCHEDULE, async () => {
       try {
-        const response = await getOldestMessage();
+        const response = parseDatabaseResponse({ response: await getOldestMessage(), normalize: toCamelCase });
         if (!response || !_.size(response)) return;
         const messageRow = _.first(response);
         const messageToSend = _.get(messageRow, `message`);
+        const group = _.get(messageRow, `groupTo`);
         const idOfSendingMessage = _.get(messageRow, `id`);
-        const players = await getAllPlayers();
+        const dateActiveFrom = +new Date() - (1000 * 60 * 60 * 24);
+        const players = group === `all` ? await getAllPlayers() : await getPlayersActiveFromDate(dateActiveFrom);
         if (!players || !_.size(players)) return console.log(`No recepients send to`);
         const arrayOfPromises = [];
         players.forEach((item) => {
