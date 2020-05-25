@@ -42,8 +42,12 @@ module.exports = {
       let newAdapterUsesValue = +player.adapterUses;
       let newAdapterId = player.adapterId;
       if (statusType === `mining` || statusType === `idle`) {
-
-        let dischargeValue = calculateDischargingResult({ amperage, start, end });
+        let dischargeValue = calculateDischargingResult({
+          amperage,
+          start,
+          end,
+          index: statusType === `mining` ? 1 : 0.2
+        });
         newVoltageValue = +player.voltageValue - dischargeValue;
         if (newVoltageValue < 0) {
           newVoltageValue = 0;

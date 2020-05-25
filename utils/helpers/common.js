@@ -39,12 +39,11 @@ module.exports = {
     ctx.scene.enter(`information`);
   },
   parseDatabaseUpdateResponse: ({ response }) => _.get(response, `affectedRows`) === 1,
-  calculateDischargingResult: ({ amperage, start, end }) => {
+  calculateDischargingResult: ({ amperage, start, end, index = 1 }) => {
     const calculatingTime = end - start;
     if (calculatingTime <= 0) return 0;
-    const amperagePerMs = amperage / 60 / 60 / 1000;
-    const result = _.ceil(amperagePerMs * calculatingTime, 4);
-    return result;
+    const amperagePerMs = (amperage * index) / 60 / 60 / 1000;
+    return _.ceil(amperagePerMs * calculatingTime, 4);
   },
   getDischargingTime: ({ amperage, startValue }) => {
     const amperagePerMs = amperage / 60 / 60 / 1000;
