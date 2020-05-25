@@ -42,18 +42,23 @@ module.exports = {
       let newAdapterUsesValue = +player.adapterUses;
       let newAdapterId = player.adapterId;
       if (statusType === `mining` || statusType === `idle`) {
+        const dischargingIndex = statusType === `mining` ? 1 : 0.2;
         let dischargeValue = calculateDischargingResult({
           amperage,
           start,
           end,
-          index: statusType === `mining` ? 1 : 0.2
+          index: dischargingIndex,
         });
         newVoltageValue = +player.voltageValue - dischargeValue;
         if (newVoltageValue < 0) {
           newVoltageValue = 0;
           if (newStatusType !== `charge`) _newStatusId = getStatusIdByType(`off`);
         } else {
-          const timeToNotification = getDischargingTime({ amperage, startValue: newVoltageValue });
+          const timeToNotification = getDischargingTime({
+            amperage,
+            startValue: newVoltageValue,
+            index: dischargingIndex
+          });
           const statusTimeTriggerValue = +new Date() + timeToNotification;
           if (!newStatusTimeTriggerValue || newStatusTimeTriggerValue > statusTimeTriggerValue) {
             newStatusTimeTriggerValue = statusTimeTriggerValue;

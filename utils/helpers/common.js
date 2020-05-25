@@ -45,8 +45,8 @@ module.exports = {
     const amperagePerMs = (amperage * index) / 60 / 60 / 1000;
     return _.ceil(amperagePerMs * calculatingTime, 4);
   },
-  getDischargingTime: ({ amperage, startValue }) => {
-    const amperagePerMs = amperage / 60 / 60 / 1000;
+  getDischargingTime: ({ amperage, startValue, index = 1 }) => {
+    const amperagePerMs = (amperage * index) / 60 / 60 / 1000;
     return _.ceil(startValue / amperagePerMs);
   },
   getMiningTime: ({ performance, diskSpace, cryptoMoneyValue }) => {
